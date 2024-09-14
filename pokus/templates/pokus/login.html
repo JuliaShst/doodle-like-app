@@ -1,95 +1,76 @@
+<!-- login.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-form {border: 3px solid #f1f1f1;} 
-
-input[type=text], input[type=password] {
-	width: 100%;
-	padding: 15px;
-	margin: 5px 0 22px 0;
-	display: inline-block;
-	border: none;
-	background: #f1f1f1;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.container {
-  padding: 16px;
-  background-color: white;
-}
-
-input[type=text]:focus, input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
-
-button {
-  background-color: #0f5e61;
-  color: white;
-  padding: 16px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
-
-button:hover {
-  opacity: 1;
-}
-
-a {
-  color: #0f5e61;
-}
-
-.login {
-  background-color: #f1f1f1;
-  text-align: center;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <title>Login Form</title>
+    <!-- Link to the CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/form_styles.css' %}">
+    <!-- Font Awesome for social media icons -->
+    <script src="https://kit.fontawesome.com/1ab94d0eba.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <main class="container">
+        <h2>Login</h2>
 
-<form method="post">
+        <!-- Display Messages -->
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
 
-  {% csrf_token %}
-  {% if messages %}
-  <ul class="messages">
-      {% for message in messages %}
-          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
-  <div class="container">
-    <h1>Log in </h1>
-    <hr>
+        <form action="{% url 'pokus:login' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-field">
+                <input type="text" name="username" id="username" placeholder="Enter Your Username" required value="{{ request.POST.username }}">
+                <div class="underline"></div>
+                {% if login_form.username.errors %}
+                    {% for error in login_form.username.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-field">
+                <input type="password" name="password" id="password" placeholder="Enter Your Password" required>
+                <div class="underline"></div>
+                {% if login_form.password.errors %}
+                    {% for error in login_form.password.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
 
-    <label for="username"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username" required>
+            <input type="submit" value="Continue">
+        </form>
 
-    <label for="password"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password" required>
+        <!-- Social Media Login -->
+        <div class="footer">
+            <span>Or Connect With Social Media</span>
+            <div class="social-fields">
+                <div class="social-field twitter">
+                    <a href="#">
+                        <i class="fab fa-twitter"></i>
+                        Sign in with Twitter
+                    </a>
+                </div>
+                <div class="social-field facebook">
+                    <a href="#">
+                        <i class="fab fa-facebook-f"></i>
+                        Sign in with Facebook
+                    </a>
+                </div>
+            </div>
+        </div>
+
+         <!-- Registration prompt -->
+         <div class="login-prompt">
+            <span>Don't have an account? <a href="{% url 'pokus:register' %}">Sign up</a></span>
+        </div>
         
-    <button type="submit">Log in</button>
-  </div>
-
-  <div class="container login">
-    <p> Don't have an account? <a href="/pokus/register">Create an account</a>.</p>
-  </div>
-</form>
-
+    </main>
 </body>
 </html>
-

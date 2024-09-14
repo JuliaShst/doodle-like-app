@@ -1,107 +1,97 @@
+<!-- register.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-form {border: 3px solid #f1f1f1;} 
-
-input[type=text], input[type=password] {
-	width: 100%;
-	padding: 15px;
-	margin: 5px 0 22px 0;
-	display: inline-block;
-	border: none;
-	background: #f1f1f1;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.container {
-  padding: 16px;
-  background-color: white;
-}
-
-input[type=text]:focus, input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
-
-.registerbtn {
-  background-color: #0f5e61;
-  color: white;
-  padding: 16px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
-
-.registerbtn:hover {
-  opacity: 1;
-}
-
-/* Add a blue text color to links */
-a {
-  color: #0f5e61;
-}
-
-.signin {
-  background-color: #f1f1f1;
-  text-align: center;
-}
-
-
-</style>
+    <meta charset="UTF-8">
+    <title>Register Form</title>
+    <!-- Link to the CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/form_styles.css' %}">
+    <!-- Font Awesome for social media icons -->
+    <script src="https://kit.fontawesome.com/1ab94d0eba.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <main class="container">
+        <h2>Sign Up</h2>
 
-    <form method="post">
+        <!-- Display Messages -->
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
 
-    {% csrf_token %}
+        <form action="{% url 'pokus:register' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-field">
+                <input type="text" name="username" id="username" placeholder="Enter Your Username" required value="{{ request.POST.username }}">
+                <div class="underline"></div>
+                {% if register_form.username.errors %}
+                    {% for error in register_form.username.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-field">
+                <input type="email" name="email" id="email" placeholder="Enter Your Email" required value="{{ request.POST.email }}">
+                <div class="underline"></div>
+                {% if register_form.email.errors %}
+                    {% for error in register_form.email.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-field">
+                <input type="password" name="password1" id="password1" placeholder="Enter Your Password" required>
+                <div class="underline"></div>
+                {% if register_form.password1.errors %}
+                    {% for error in register_form.password1.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-field">
+                <input type="password" name="password2" id="password2" placeholder="Confirm Your Password" required>
+                <div class="underline"></div>
+                {% if register_form.password2.errors %}
+                    {% for error in register_form.password2.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
 
-    <div class="container">
-      <h1>Sign up</h1>
-      <p>Please fill in this form to create an account.</p>
-      <hr>
+            <input type="submit" value="Continue">
+        </form>
 
-      {% if messages %}
-      <ul class="messages">
-          {% for message in messages %}
-              <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          {% endfor %}
-      </ul>
-      {% endif %}
+        <!-- Social Media Registration -->
+        <div class="footer">
+            <span>Or Connect With Social Media</span>
+            <div class="social-fields">
+                <div class="social-field twitter">
+                    <a href="#">
+                        <i class="fab fa-twitter"></i>
+                        Sign up with Twitter
+                    </a>
+                </div>
+                <div class="social-field facebook">
+                    <a href="#">
+                        <i class="fab fa-facebook-f"></i>
+                        Sign up with Facebook
+                    </a>
+                </div>
+            </div>
+        </div>
 
-
-      <label for="username"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="username" id="username" required>
-
-      <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" id="email" required>
-
-      <label for="password1"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="password1" id="password1" required>
-
-      <label for="password2"><b>Password confirmation</b></label>
-      <input type="password" placeholder="Repeat Password" name="password2" id="password2" required>
-
-      <button type="submit" class="registerbtn">Sign up</button>
-    </div>
-  
-    <div class="container signin">
-      <p>If you already have an account, <a href="/pokus/login">Log in</a> instead.</p>
-    </div>
-</form>
-
+        <!-- Login prompt -->
+        <div class="login-prompt">
+            <span>Already have an account? <a href="{% url 'pokus:login' %}">Log in</a></span>
+        </div>
+        
+    </main>
 </body>
 </html>
+
+
 
