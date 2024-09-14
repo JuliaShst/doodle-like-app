@@ -1,0 +1,70 @@
+{% extends 'pokus/base.html' %}
+
+  {% block content %}
+
+
+    <div class="container">
+        <h1>Details of the event</h1>
+        <hr>
+
+    <h2>{{ event.title }}</h2>
+    <p><strong>Description: </strong>{{ event.description }}</p>
+    <p><strong>Duration: </strong>{{ event.duration }} minutes</p>
+    <p><strong>Created by: </strong>{{ event.created_by }} </p>
+    <p><strong>Created at: </strong>{{ event.created_at }} </p>
+    <p><strong>Time slot selection: </strong> </p>
+  
+    <ul>
+      {% for time_slot in date_time_options %}
+          <li>
+              {{ time_slot.date_time }}
+              <form method="post" style="border: none" action="{% url 'pokus:event_detail' event.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="time_slot" value="{{ time_slot.id }}">
+                  <input type="name" name="user_name" placeholder="Your Name">
+                  <button type="submit" class="smallbtn">Vote</button>
+              </form>
+              {% if time_slot.voter_name %}
+                  {% if time_slot.id == event.most_convenient_time.id %}
+                      <strong>Most convenient time</strong>: {{ time_slot.date_time|date:"F d, Y, H:i a" }}
+                  {% endif %}
+              {% endif %}
+          </li>
+      {% endfor %}
+  </ul>
+
+  <strong>Votes:</strong>
+  {% for time_slot in date_time_options %}
+      {% if time_slot.voter_name %}
+      <li>
+        {{ time_slot.voter_name }} voted {{ time_slot.date_time|date:"M. d, Y, h:i a" }}<br>
+
+        </li>
+
+      {% endif %}
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+<!-- Copy link to clipboard -->
+<button class="btn" id="copy-link-btn">Copy Event Link</button>
+
+<input type="text" id="event-link" value="{{ request.build_absolute_uri|safe }}" style="position: absolute; left: -9999px;" readonly>
+
+<script>
+    function copyEventLink() {
+        var copyLink = document.getElementById("event-link");
+        copyLink.select();
+        document.execCommand("copy");
+        alert("Event link copied to clipboard!");
+    }
+    var copyLinkBtn = document.getElementById("copy-link-btn");
+    copyLinkBtn.addEventListener("click", copyEventLink);
+</script>
+{% endif %}
+
+{% endblock %}
+
+</body>
+</html>
+
+

@@ -1,0 +1,84 @@
+{% extends 'pokus/base.html' %}
+
+{% block content %}
+
+<form action="{% url 'pokus:add_new' %}" method="post">
+
+{% csrf_token %}
+
+  <div class="container">
+    <h1>Create a new action</h1>
+    <hr>
+
+    <label for="title"><b>Title</b></label>
+    <input type="text" placeholder="Enter Title" name="title" required>
+
+    <hr>
+
+    <label for="description"><b>Description</b></label>
+    <textarea placeholder="Enter Description" name="description" rows="4" required></textarea>
+
+    <hr>
+
+    <label for="duration"><b>Duration</b></label>
+    <input type="range" name="duration" min="10" max="180" step="10" value="60" class="slider">
+    <span id="duration-label">60 min.</span>
+  
+    <hr>
+
+    <label for="date_time_options"><b>Date and Time Options</b></label>
+    <div id="date_time_options_container">
+        <div class="date_time_option">
+            <input type="datetime-local" placeholder="Select Date and Time" name="date_time_options_1" required>
+        </div>
+    </div>
+
+    <button type="button" class="smallbtn" id="add_date_time_option">Add Date and Time Option</button>
+
+    <hr>
+
+    <button type="submit" class="registerbtn">Create Action</button>
+</div>
+
+<script>
+    const durationSlider = document.querySelector('input[name="duration"]');
+    const durationLabel = document.getElementById("duration-label");
+
+    durationSlider.addEventListener("input", () => {
+        durationLabel.textContent = durationSlider.value + " min.";
+    });
+
+    const dateOptionsContainer = document.getElementById("date_time_options_container");
+    const addDateOptionButton = document.getElementById("add_date_time_option");
+
+    let timeSlotCounter = 2;
+
+    addDateOptionButton.addEventListener("click", () => {
+        const dateOptionDiv = document.createElement("div");
+        dateOptionDiv.classList.add("date_time_option");
+
+        const newInput = document.createElement("input");
+        newInput.type = "datetime-local";
+        newInput.placeholder = "Select Date and Time";
+
+        newInput.name = "date_time_options_" + timeSlotCounter;
+        newInput.required = true;
+
+        timeSlotCounter++;
+        
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.classList.add("smallbtn");
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => {
+        dateOptionsContainer.removeChild(dateOptionDiv);
+        }); 
+     
+
+        dateOptionDiv.appendChild(newInput);
+        dateOptionDiv.appendChild(deleteButton);
+
+        dateOptionsContainer.appendChild(dateOptionDiv);
+    });
+</script>
+{% endblock %}
